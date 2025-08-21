@@ -1,3 +1,4 @@
 # This files will limit the files that should be pushed within my repo
 
 **/.qodo
+**/.env.local

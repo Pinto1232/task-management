@@ -22,6 +22,9 @@ This is a full-Stack web application that serves as task management inventory sy
   * Clone the repository.
   * Run `dotnet run` in backend folder to start the server.
   * Run `npm install && npm start` in frontend folder to start the client.
+  * Make sure to set up the database connection string in the backend's `appsettings.json` file.
+  * Make sure to create a database named "TaskManagement" in your SQL Server instance before running the server.
+  * Make sure to update the database connection string in the frontend's `.env.local` file with your own credentials.
 
 * Deployment
   * The backend is deployed on Azure App Service. If required, I can deploy it on AWS or GCP.
