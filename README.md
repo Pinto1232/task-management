@@ -7,13 +7,16 @@ This is a full-Stack web application that serves as task management inventory sy
   * .Net core 8.1
   * Entity Framework Core 9
   * Microsfot SQL Server Database
+  * Authentication
+  * JWT Token Authentication & Authorization
+  * Role-based access (USER, ADMIN)
+  * Secure password hashing using BCrypt.NET-Core
+
 
 * Frontend
   * React.js
   * React Query Tanskstak Toolkit (RTK Query)
   * CSS3
-* Authentication
-  * JWT Token Authentication
 
 * Architecture
   * Controller Based Architecture (Not complex), but I could you clean architecture if needed.
