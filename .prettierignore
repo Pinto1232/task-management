@@ -1,0 +1,10 @@
+# Ignore handlebars templates anywhere in repo
+**/plop-templates/**
+**/*.hbs
+
+# Common
+node_modules/
+dist/
+*.log
+coverage/
+.env

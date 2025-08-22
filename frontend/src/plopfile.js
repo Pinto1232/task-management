@@ -7,7 +7,7 @@ export default function (plop) {
                 type: 'input',
                 name: 'name',
                 message: 'Component name (camelCase):',
-                validate: (value) => {
+                validate: value => {
                     if (!/^[a-z][A-Za-z0-9]*$/.test(value)) {
                         return 'Invalid component name. Must be camelCase and start with a lowercase letter.';
                     } else {
@@ -46,7 +46,7 @@ export default function (plop) {
                 type: 'add',
                 path: 'components/{{camelCase name}}/index.ts',
                 templateFile: 'plop-templates/index.hbs',
-            }
+            },
         ],
     });
 
@@ -58,7 +58,7 @@ export default function (plop) {
                 type: 'input',
                 name: 'name',
                 message: 'UI Component name (camelCase):',
-                validate: (value) => {
+                validate: value => {
                     if (!/^[a-z][A-Za-z0-9]*$/.test(value)) {
                         return 'Invalid UI component name. Must be camelCase and start with a lowercase letter.';
                     } else {
@@ -97,7 +97,7 @@ export default function (plop) {
                 type: 'add',
                 path: 'ui/{{camelCase name}}/index.ts',
                 templateFile: 'plop-templates/index.hbs',
-            }
-        ]
+            },
+        ],
     });
 }
