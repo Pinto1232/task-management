@@ -36,4 +36,9 @@ This is a full-Stack web application that serves as task management inventory sy
   * The database is hosted on Microsoft Azure SQL Database. If required, I can deploy it on AWS or GCP.
   * The frontend is deployed on Vercel. If required, I can deploy it on AWS or GCP.
 
+* Command to run Prettier
+```bash
+npx prettier --write .
+```
+
 The backend will be run on port 5131 and the frontend will be run on port 3000.
