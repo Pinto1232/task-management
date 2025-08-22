@@ -1,0 +1,42 @@
+@backend_HostAddress = http://localhost:5164
+
+GET {{backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+# Tasks API
+
+GET {{backend_HostAddress}}/api/tasks
+Accept: application/json
+
+###
+
+POST {{backend_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+	"title": "First task",
+	"isCompleted": false
+}
+
+###
+
+GET {{backend_HostAddress}}/api/tasks/1
+Accept: application/json
+
+###
+
+PUT {{backend_HostAddress}}/api/tasks/1
+Content-Type: application/json
+
+{
+	"id": 1,
+	"title": "First task (updated)",
+	"isCompleted": true
+}
+
+###
+
+DELETE {{backend_HostAddress}}/api/tasks/1
+

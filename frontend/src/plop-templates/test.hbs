@@ -3,11 +3,13 @@ import {{pascalCase name}} from './{{camelCase name}}'
 
 describe('{{pascalCase name}}', () => {
    test('should render without crashing', () => {
-        render(<{{pascalCase name}} />)
-        expect(screen.getByTestId('{{kebabCase name}}')).toBeInTheDocument();
+    render(<{{pascalCase name}}>Content</{{pascalCase name}}>)
+    const el = screen.getByTestId('{{kebabCase name}}');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveTextContent('Content');
     })
    test('should match snapshot', () => {
-        const {asFragment} = render(<{{pascalCase name}} />)
+    const {asFragment} = render(<{{pascalCase name}}>Content</{{pascalCase name}}>)
         expect(asFragment()).toMatchSnapshot()
     });
 });

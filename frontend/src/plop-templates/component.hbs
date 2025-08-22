@@ -1,11 +1,10 @@
-import React from 'react';
-import styles from './{{camelCase name}}.styles.css';
-import { {{pascalCase name}}Props } from './{{camelCase name}}.types';
+import styles from './{{camelCase name}}.module.css';
+import type { {{pascalCase name}}Props } from './{{camelCase name}}.types';
 
-const {{pascalCase name}}: React.FC<{{pascalCase name}}Props> = () => {
+const {{pascalCase name}} = ({ children, className }: {{pascalCase name}}Props) => {
   return (
-    <div className={styles.container} data-testid="{{kebabCase name}}">
-        {'/* My component code here */'}
+    <div className={[styles.container, className].filter(Boolean).join(' ')} data-testid="{{kebabCase name}}">
+      {children}
     </div>
   );
 };

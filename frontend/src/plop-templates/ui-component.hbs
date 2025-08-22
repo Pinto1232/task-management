@@ -1,0 +1,46 @@
+import { forwardRef } from 'react';
+import styles from './{{camelCase name}}.module.css';
+import type { {{pascalCase name}}Props } from './{{camelCase name}}.types';
+
+function cn(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(' ');
+}
+
+type {{pascalCase name}}Component = (<C extends React.ElementType = 'div'>(
+  props: {{pascalCase name}}Props<C> & { ref?: React.Ref<any> }
+) => React.ReactElement | null) & { displayName?: string };
+
+const {{pascalCase name}} = forwardRef<any, {{pascalCase name}}Props<any>>((
+  {
+    as,
+    className,
+    variant = 'default',
+    size = 'md',
+    fullWidth = false,
+    children,
+    ...rest
+  },
+  ref
+) => {
+  const Tag = (as || 'div') as React.ElementType;
+  return (
+    <Tag
+      ref={ref as any}
+      className={cn(
+        styles.container,
+        styles[`variant_${variant}`],
+        styles[`size_${size}`],
+        fullWidth && styles.fullWidth,
+        className
+      )}
+      data-testid="{{kebabCase name}}"
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}) as {{pascalCase name}}Component;
+
+{{pascalCase name}}.displayName = '{{pascalCase name}}';
+
+export default {{pascalCase name}};

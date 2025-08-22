@@ -1,0 +1,24 @@
+import type React from 'react';
+
+export type {{pascalCase name}}Variant = 'default' | 'primary' | 'secondary' | 'ghost';
+export type {{pascalCase name}}Size = 'sm' | 'md' | 'lg';
+
+type AsProp<T extends React.ElementType> = {
+  as?: T;
+};
+
+type PolymorphicProps<T extends React.ElementType, P> = P &
+  AsProp<T> &
+  Omit<React.ComponentPropsWithoutRef<T>, keyof P | 'as' | 'ref'> & {
+    className?: string;
+  };
+
+export type Base{{pascalCase name}}Props = {
+  variant?: {{pascalCase name}}Variant;
+  size?: {{pascalCase name}}Size;
+  fullWidth?: boolean;
+  children?: React.ReactNode;
+};
+
+export type {{pascalCase name}}Props<T extends React.ElementType = 'div'> =
+  PolymorphicProps<T, Base{{pascalCase name}}Props>;

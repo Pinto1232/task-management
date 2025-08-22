@@ -1,6 +1,6 @@
 import type React from 'react';
 
-export interface {{pascalCase name}}Props {
+export interface StopButtonProps {
 	className?: string;
 	children?: React.ReactNode;
 }

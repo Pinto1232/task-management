@@ -29,7 +29,7 @@ export default function (plop) {
             },
             {
                 type: 'add',
-                path: 'components/{{camelCase name}}/{{camelCase name}}.styles.css',
+                path: 'components/{{camelCase name}}/{{camelCase name}}.module.css',
                 templateFile: 'plop-templates/styles.hbs',
             },
             {
@@ -76,27 +76,27 @@ export default function (plop) {
             {
                 type: 'add',
                 path: 'ui/{{camelCase name}}/{{camelCase name}}.tsx',
-                templateFile: 'plop-templates/component.hbs',
+                templateFile: 'plop-templates/ui-component.hbs',
             },
             {
                 type: 'add',
-                path: 'ui/{{camelCase name}}/{{camelCase name}}.styles.css',
-                templateFile: 'plop-templates/styles.hbs',
+                path: 'ui/{{camelCase name}}/{{camelCase name}}.module.css',
+                templateFile: 'plop-templates/ui-styles.hbs',
             },
             {
                 type: 'add',
                 path: 'ui/{{camelCase name}}/{{camelCase name}}.types.ts',
-                templateFile: 'plop-templates/types.hbs',
+                templateFile: 'plop-templates/ui-types.hbs',
             },
             {
                 type: 'add',
                 path: 'ui/{{camelCase name}}/{{camelCase name}}.test.tsx',
-                templateFile: 'plop-templates/test.hbs',
+                templateFile: 'plop-templates/ui-test.hbs',
             },
             {
                 type: 'add',
                 path: 'ui/{{camelCase name}}/index.ts',
-                templateFile: 'plop-templates/index.hbs',
+                templateFile: 'plop-templates/ui-index.hbs',
             },
         ],
     });
