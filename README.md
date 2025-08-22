@@ -61,7 +61,7 @@ dotnet run
 * Command to run the frontend:
 ```bash
 cd frontend
-npm start
+npm run dev
 ```
 
 The backend will be run on port 5131 and the frontend will be run on port 3000.
