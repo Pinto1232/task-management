@@ -1,14 +1,13 @@
 import {render, screen} from '@testing-library/react'
-import {{camelCase name}} from './{{camelCase name}}'
+import {{pascalCase name}} from './{{camelCase name}}'
 
-describe('{{camelCase name}}', () => {
+describe('{{pascalCase name}}', () => {
    test('should render without crashing', () => {
-        render(<{{camelCase name}} />)
-        expect(screen.getByTestId(component')).toBeInTheDocument();
-    }
-    )
+        render(<{{pascalCase name}} />)
+        expect(screen.getByTestId('{{kebabCase name}}')).toBeInTheDocument();
+    })
    test('should match snapshot', () => {
-        const {asFragment} = render(<{{camelCase name}} />)
+        const {asFragment} = render(<{{pascalCase name}} />)
         expect(asFragment()).toMatchSnapshot()
     });
 });

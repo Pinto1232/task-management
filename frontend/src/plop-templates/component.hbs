@@ -1,14 +1,13 @@
 import React from 'react';
 import styles from './{{camelCase name}}.styles.css';
+import { {{pascalCase name}}Props } from './{{camelCase name}}.types';
 
-interface {{camelCase name}}Props {}
-
-const {{camelCase name}}: React.FC<{{camelCase name}}Props> = () => {
+const {{pascalCase name}}: React.FC<{{pascalCase name}}Props> = () => {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="{{kebabCase name}}">
         {'/* My component code here */'}
     </div>
   );
 };
 
-export default {{camelCase name}};
+export default {{pascalCase name}};

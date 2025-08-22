@@ -1,4 +1,4 @@
-module.exports = function (plop) {
+export default function (plop) {
     // Create generators here
     plop.setGenerator('component', {
         description: 'Create a new React component',
@@ -24,35 +24,35 @@ module.exports = function (plop) {
         actions: [
             {
                 type: 'add',
-                path: 'src/components/{{ camelCase name}}/{{camelCase name}}.tsx',
-                templateFile: 'plop-templates/component.hbs',   
+                path: 'components/{{camelCase name}}/{{camelCase name}}.tsx',
+                templateFile: 'plop-templates/component.hbs',
             },
             {
                 type: 'add',
-                path: 'src/components/{{ camelCase name}}/{{camelCase name}}.styles.css',
-                templateFile: 'plop-templates/styles.hbs',   
+                path: 'components/{{camelCase name}}/{{camelCase name}}.styles.css',
+                templateFile: 'plop-templates/styles.hbs',
             },
             {
                 type: 'add',
-                path: 'src/components/{{ camelCase name}}/{{camelCase name}}.types.ts',
-                templateFile: 'plop-templates/types.hbs',   
+                path: 'components/{{camelCase name}}/{{camelCase name}}.types.ts',
+                templateFile: 'plop-templates/types.hbs',
             },
-             {
+            {
                 type: 'add',
-                path: 'src/components/{{ camelCase name}}/{{camelCase name}}.test.tsx',
-                templateFile: 'plop-templates/test.hbs',   
+                path: 'components/{{camelCase name}}/{{camelCase name}}.test.tsx',
+                templateFile: 'plop-templates/test.hbs',
             },
-             {
+            {
                 type: 'add',
-                path: 'src/components/{{ camelCase name}}/{{camelCase name}}.index.ts',
-                templateFile: 'plop-templates/index.hbs',   
+                path: 'components/{{camelCase name}}/index.ts',
+                templateFile: 'plop-templates/index.hbs',
             }
         ],
     });
-    
+
     // UI Component generator
     plop.setGenerator('ui-component', {
-        description: 'Create a new UI component sr/ui/',
+        description: 'Create a new UI component ui/',
         prompts: [
             {
                 type: 'input',
@@ -74,29 +74,29 @@ module.exports = function (plop) {
         ],
         actions: [
             {
-                type: 'add',    
-                path: 'src/ui/{{ camelCase name}}/{{camelCase name}}.tsx',
-                templateFile: 'plop-templates/component.hbs',   
+                type: 'add',
+                path: 'ui/{{camelCase name}}/{{camelCase name}}.tsx',
+                templateFile: 'plop-templates/component.hbs',
             },
             {
-                type: 'add',    
-                path: 'src/ui/{{ camelCase name}}/{{camelCase name}}.styles.css',
-                templateFile: 'plop-templates/styles.hbs',   
+                type: 'add',
+                path: 'ui/{{camelCase name}}/{{camelCase name}}.styles.css',
+                templateFile: 'plop-templates/styles.hbs',
             },
             {
-                type: 'add',    
-                path: 'src/ui/{{ camelCase name}}/{{camelCase name}}.types.ts',
-                templateFile: 'plop-templates/types.hbs',   
+                type: 'add',
+                path: 'ui/{{camelCase name}}/{{camelCase name}}.types.ts',
+                templateFile: 'plop-templates/types.hbs',
             },
             {
-                type: 'add',    
-                path: 'src/ui/{{ camelCase name}}/{{camelCase name}}.test.tsx',
-                templateFile: 'plop-templates/test.hbs',   
+                type: 'add',
+                path: 'ui/{{camelCase name}}/{{camelCase name}}.test.tsx',
+                templateFile: 'plop-templates/test.hbs',
             },
             {
-                type: 'add',    
-                path: 'src/ui/{{ camelCase name}}/{{camelCase name}}.index.tsx',
-                templateFile: 'plop-templates/test.hbs',   
+                type: 'add',
+                path: 'ui/{{camelCase name}}/index.ts',
+                templateFile: 'plop-templates/index.hbs',
             }
         ]
     });
