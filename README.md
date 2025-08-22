@@ -16,6 +16,8 @@ This is a full-Stack web application that serves as task management inventory sy
 * Frontend
   * React.js
   * React Query Tanskstak Toolkit (RTK Query)
+  * Typescript
+  * Vite
   * CSS3
 
 * Architecture
