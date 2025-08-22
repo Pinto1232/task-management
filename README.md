@@ -39,6 +39,29 @@ This is a full-Stack web application that serves as task management inventory sy
 * Command to run Prettier
 ```bash
 npx prettier --write .
+
+* Command to run ESLint
+```bash
+npx eslint src/
+
+* Command to run Jest tests
+```bash
+npm test
+
+* Command to build the project
+```bash
+npm run build
+
+
+* To run the project locally:
+```bash
+cd backend
+dotnet run
+
+* Command to run the frontend:
+```bash
+cd frontend
+npm start
 ```
 
 The backend will be run on port 5131 and the frontend will be run on port 3000.
