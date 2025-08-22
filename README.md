@@ -64,4 +64,14 @@ cd frontend
 npm run dev
 ```
 
+* Command to create component using plop
+```bash
+npm run plop:component
+```
+
+* Command to create ui using plop
+```bash
+npm run plop:ui
+```
+
 The backend will be run on port 5131 and the frontend will be run on port 3000.
