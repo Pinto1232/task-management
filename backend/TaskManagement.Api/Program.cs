@@ -6,11 +6,9 @@ using TaskManagement.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-// Traditional N-Tier: Register services
+// Register services
 builder.Services.AddScoped<ITodoTaskRepository, InMemoryTodoTaskRepository>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
 builder.Services.AddScoped<ILoggingService, LoggingService>();
@@ -26,10 +24,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Traditional N-Tier: Error handling middleware first
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
