@@ -1,6 +1,68 @@
-@TaskManagement.Api_HostAddress = http://localhost:5174
+@TaskManagement.Api_HostAddress = https://localhost:7018
+@TaskManagement.Api_HostAddress_Http = http://localhost:5174
 
-GET {{TaskManagement.Api_HostAddress}}/weatherforecast/
+### Get all tasks
+GET {{TaskManagement.Api_HostAddress}}/api/tasks
+Accept: application/json
+
+###
+
+### Get task by ID (replace with actual ID after creating a task)
+GET {{TaskManagement.Api_HostAddress}}/api/tasks/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+###
+
+### Create a new task
+POST {{TaskManagement.Api_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "My First Task",
+  "description": "This is a test task created via HTTP file",
+  "dueDate": "2024-12-31T23:59:59Z"
+}
+
+###
+
+### Update a task (replace ID with actual ID)
+PUT {{TaskManagement.Api_HostAddress}}/api/tasks/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "title": "Updated Task Title",
+  "description": "Updated description",
+  "isCompleted": false,
+  "dueDate": "2024-12-31T23:59:59Z"
+}
+
+###
+
+### Complete a task (replace ID with actual ID)
+POST {{TaskManagement.Api_HostAddress}}/api/tasks/00000000-0000-0000-0000-000000000000/complete
+
+###
+
+### Delete a task (replace ID with actual ID)
+DELETE {{TaskManagement.Api_HostAddress}}/api/tasks/00000000-0000-0000-0000-000000000000
+
+###
+
+### Get overdue tasks
+GET {{TaskManagement.Api_HostAddress}}/api/tasks/overdue
+Accept: application/json
+
+###
+
+### Get tasks due soon
+GET {{TaskManagement.Api_HostAddress}}/api/tasks/due-soon
+Accept: application/json
+
+###
+
+### Get task summary
+GET {{TaskManagement.Api_HostAddress}}/api/tasks/summary
 Accept: application/json
 
 ###
