@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using TaskManagement.Application.Entities;
 
-namespace TaskManagement.Infrastructure.Repositories;
+namespace TaskManagement.Application.Repositories;
 
 public class InMemoryTodoTaskRepository
 {

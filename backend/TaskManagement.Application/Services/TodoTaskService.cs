@@ -1,12 +1,18 @@
-using TaskManagement.Application.Abstractions.Repositories;
 using TaskManagement.Application.DTOs;
-using TaskManagement.Application.Services.Interfaces;
 using TaskManagement.Application.Entities;
+using TaskManagement.Application.Repositories;
 
 namespace TaskManagement.Application.Services;
 
-public class TodoTaskService(ITodoTaskRepository repository) : ITodoTaskService
+public class TodoTaskService
 {
+    private readonly InMemoryTodoTaskRepository _repository;
+
+    public TodoTaskService()
+    {
+        _repository = new InMemoryTodoTaskRepository();
+    }
+
     private static TodoTaskResponse Map(TodoTask t) => new(
         t.Id,
         t.Title,
@@ -18,10 +24,10 @@ public class TodoTaskService(ITodoTaskRepository repository) : ITodoTaskService
     );
 
     public async Task<TodoTaskResponse?> GetAsync(Guid id, CancellationToken ct = default)
-        => (await repository.GetByIdAsync(id, ct)) is { } entity ? Map(entity) : null;
+        => (await _repository.GetByIdAsync(id, ct)) is { } entity ? Map(entity) : null;
 
     public async Task<IReadOnlyList<TodoTaskResponse>> ListAsync(CancellationToken ct = default)
-        => (await repository.GetAllAsync(ct)).Select(Map).ToList();
+        => (await _repository.GetAllAsync(ct)).Select(Map).ToList();
 
     public async Task<TodoTaskResponse> CreateAsync(CreateTodoTaskRequest request, CancellationToken ct = default)
     {
@@ -31,13 +37,13 @@ public class TodoTaskService(ITodoTaskRepository repository) : ITodoTaskService
             Description = request.Description,
             DueDate = request.DueDate,
         };
-        var created = await repository.AddAsync(entity, ct);
+        var created = await _repository.AddAsync(entity, ct);
         return Map(created);
     }
 
     public async Task<bool> UpdateAsync(UpdateTodoTaskRequest request, CancellationToken ct = default)
     {
-        var existing = await repository.GetByIdAsync(request.Id, ct);
+        var existing = await _repository.GetByIdAsync(request.Id, ct);
         if (existing is null) return false;
 
         existing.Title = request.Title.Trim();
@@ -45,9 +51,9 @@ public class TodoTaskService(ITodoTaskRepository repository) : ITodoTaskService
         existing.IsCompleted = request.IsCompleted;
         existing.DueDate = request.DueDate;
         existing.UpdatedAt = DateTimeOffset.UtcNow;
-        return await repository.UpdateAsync(existing, ct);
+        return await _repository.UpdateAsync(existing, ct);
     }
 
     public Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
-        => repository.DeleteAsync(id, ct);
+        => _repository.DeleteAsync(id, ct);
 }

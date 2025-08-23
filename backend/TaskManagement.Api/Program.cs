@@ -1,6 +1,3 @@
-using TaskManagement.Application;
-using TaskManagement.Infrastructure;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,10 +11,6 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
-
-// Layered DI
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

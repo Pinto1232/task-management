@@ -1,25 +1,32 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManagement.Application.DTOs;
-using TaskManagement.Application.Services.Interfaces;
+using TaskManagement.Application.Services;
 
 namespace TaskManagement.Api.Controllers;
 
 [ApiController]
 [Route("api/tasks")]
-public class TasksController(ITodoTaskService service) : ControllerBase
+public class TasksController : ControllerBase
 {
+    private readonly TodoTaskService _service;
+
+    public TasksController()
+    {
+        _service = new TodoTaskService();
+    }
+
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<TodoTaskResponse>>> List(CancellationToken ct)
-        => Ok(await service.ListAsync(ct));
+        => Ok(await _service.ListAsync(ct));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TodoTaskResponse>> Get(Guid id, CancellationToken ct)
-        => (await service.GetAsync(id, ct)) is { } task ? Ok(task) : NotFound();
+        => (await _service.GetAsync(id, ct)) is { } task ? Ok(task) : NotFound();
 
     [HttpPost]
     public async Task<ActionResult<TodoTaskResponse>> Create([FromBody] CreateTodoTaskRequest req, CancellationToken ct)
     {
-        var created = await service.CreateAsync(req, ct);
+        var created = await _service.CreateAsync(req, ct);
         return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
 
@@ -27,11 +34,11 @@ public class TasksController(ITodoTaskService service) : ControllerBase
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTodoTaskRequest req, CancellationToken ct)
     {
         if (id != req.Id) return BadRequest("Mismatched id");
-        var ok = await service.UpdateAsync(req, ct);
+        var ok = await _service.UpdateAsync(req, ct);
         return ok ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
-        => await service.DeleteAsync(id, ct) ? NoContent() : NotFound();
+        => await _service.DeleteAsync(id, ct) ? NoContent() : NotFound();
 }
