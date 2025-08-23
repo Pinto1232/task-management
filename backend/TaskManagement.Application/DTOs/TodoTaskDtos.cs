@@ -1,27 +1,29 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace TaskManagement.Application.DTOs;
 
-public record TodoTaskResponse(
-    Guid Id,
-    string Title,
-    string? Description,
-    bool IsCompleted,
-    DateTimeOffset? DueDate,
-    DateTimeOffset CreatedAt,
-    DateTimeOffset? UpdatedAt
-);
+// Traditional N-Tier: Simple classes instead of records
+public class TodoTaskResponse
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsCompleted { get; set; }
+    public DateTimeOffset? DueDate { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
+}
 
-public record CreateTodoTaskRequest(
-    [property: Required, StringLength(200, MinimumLength = 1)] string Title,
-    string? Description,
-    DateTimeOffset? DueDate
-);
+public class CreateTodoTaskRequest
+{
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public DateTimeOffset? DueDate { get; set; }
+}
 
-public record UpdateTodoTaskRequest(
-    [property: Required] Guid Id,
-    [property: Required, StringLength(200, MinimumLength = 1)] string Title,
-    string? Description,
-    bool IsCompleted,
-    DateTimeOffset? DueDate
-);
+public class UpdateTodoTaskRequest
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsCompleted { get; set; }
+    public DateTimeOffset? DueDate { get; set; }
+}
