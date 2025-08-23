@@ -1,12 +1,17 @@
 import styles from './login.module.css';
 import type { LoginProps } from './login.types';
 
-const Login = ({ className, onSwitchToRegistration }: LoginProps) => {
+const Login = ({ className, onSwitchToRegistration, onLogin }: LoginProps) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onLogin?.();
+  };
+
   return (
     <div className={[styles.container, className].filter(Boolean).join(' ')} data-testid="login">
       <h2 className={styles.title}>Welcome Back</h2>
       <p className={styles.subtitle}>Sign in to your account</p>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputGroup}>
           <label htmlFor="email" className={styles.label}>Email</label>
           <input

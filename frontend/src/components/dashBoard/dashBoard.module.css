@@ -1,0 +1,65 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #f8f9fa;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.main {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 64px);
+  padding: 2rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.mainWithSidebar {
+  margin-left: 0;
+}
+
+.logoutButton {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logoutButton:hover {
+  background: rgba(239, 68, 68, 0.9);
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.logoutButton:active {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .main {
+    left: 280px;
+    width: calc(100% - 280px);
+  }
+  
+  .mainWithSidebar {
+    left: 280px;
+    width: calc(100% - 280px);
+  }
+}

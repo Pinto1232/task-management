@@ -1,0 +1,128 @@
+.container {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 64px);
+  background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.open {
+  transform: translateX(0);
+}
+
+.closed {
+  transform: translateX(-100%);
+}
+
+.content {
+  padding: 2rem 0;
+  height: 100%;
+}
+
+.navigation {
+  height: 100%;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem;
+}
+
+.menuItem {
+  margin: 0 0 0.5rem 0;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.menuLink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.menuLink:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.menuLink:hover::before {
+  width: 100%;
+}
+
+.menuLink:focus {
+  outline: none;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.menuLink:focus::before {
+  width: 100%;
+}
+
+.icon {
+  font-size: 1.25rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menuLink:hover .icon {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+@media (min-width: 768px) {
+  .container {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    transform: translateX(0);
+    height: calc(100vh - 64px);
+  }
+  
+  .open,
+  .closed {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+}

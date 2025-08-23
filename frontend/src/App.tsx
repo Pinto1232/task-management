@@ -2,9 +2,15 @@ import { useState } from 'react';
 import './App.css';
 import Login from './components/login';
 import Registration from './components/registration';
+import DashBoard from './components/dashBoard';
 
 function App() {
     const [activeTab, setActiveTab] = useState<'login' | 'registration'>('login');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    if (isLoggedIn) {
+        return <DashBoard />;
+    }
 
     return (
         <div style={{ 
@@ -73,7 +79,10 @@ function App() {
                 
                 <div style={{ padding: '0' }}>
                     {activeTab === 'login' ? (
-                        <Login onSwitchToRegistration={() => setActiveTab('registration')} />
+                        <Login 
+                            onSwitchToRegistration={() => setActiveTab('registration')}
+                            onLogin={() => setIsLoggedIn(true)}
+                        />
                     ) : (
                         <Registration onSwitchToLogin={() => setActiveTab('login')} />
                     )}

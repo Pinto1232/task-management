@@ -42,7 +42,7 @@
   border: none;
   border-bottom: 1px solid #d1d5db;
   border-radius: 0;
-  font-size: 1rem;
+  font-size: 0.75rem;
   transition: all 0.2s ease;
   background: white;
 }
