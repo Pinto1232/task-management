@@ -1,4 +1,4 @@
-using TaskManagement.Domain.Entities;
+using TaskManagement.Application.Entities;
 
 namespace TaskManagement.Application.Abstractions.Repositories;
 

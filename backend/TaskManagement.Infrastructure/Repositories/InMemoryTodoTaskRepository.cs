@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using TaskManagement.Application.Abstractions.Repositories;
-using TaskManagement.Domain.Entities;
+using TaskManagement.Application.Entities;
 
 namespace TaskManagement.Infrastructure.Repositories;
 

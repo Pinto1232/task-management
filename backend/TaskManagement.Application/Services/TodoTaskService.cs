@@ -1,7 +1,7 @@
 using TaskManagement.Application.Abstractions.Repositories;
 using TaskManagement.Application.DTOs;
 using TaskManagement.Application.Services.Interfaces;
-using TaskManagement.Domain.Entities;
+using TaskManagement.Application.Entities;
 
 namespace TaskManagement.Application.Services;
 

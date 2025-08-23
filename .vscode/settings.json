@@ -1,0 +1,4 @@
+{
+  // Open new integrated terminals in the API project folder so `dotnet run` works without --project
+  "terminal.integrated.cwd": "${workspaceFolder}/backend/TaskManagement.Api"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "EQsqxhZRfgs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\pinto\\Documents\\Development\\task-management\\backend\\TaskManagement.Application\\TaskManagement.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pinto\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.1\\microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

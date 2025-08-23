@@ -1,0 +1,29 @@
+{
+  // Tasks to build/run the backend API from VS Code
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Backend API",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["run"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend/TaskManagement.Api"
+      },
+      "problemMatcher": ["$msCompile"],
+      "group": "build"
+    },
+    {
+      "label": "Build Backend API",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/backend/TaskManagement.Api/TaskManagement.Api.csproj",
+        "-nologo"
+      ],
+      "problemMatcher": ["$msCompile"],
+      "group": "build"
+    }
+  ]
+}
