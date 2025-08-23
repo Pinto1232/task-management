@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManagement.Application.DTOs;
 using TaskManagement.Application.BusinessLogic;
 using TaskManagement.Application.BusinessObjects;
+using TaskManagement.Application.Services;
+using TaskManagement.Application.Exceptions;
 
 namespace TaskManagement.Api.Controllers;
 
@@ -10,10 +12,12 @@ namespace TaskManagement.Api.Controllers;
 public class TasksController : ControllerBase
 {
     private readonly TodoTaskBusinessLogic _businessLogic;
+    private readonly IValidationService _validationService;
 
-    public TasksController()
+    public TasksController(TodoTaskBusinessLogic businessLogic, IValidationService validationService)
     {
-        _businessLogic = new TodoTaskBusinessLogic();
+        _businessLogic = businessLogic;
+        _validationService = validationService;
     }
 
     // Convert Business Object to DTO
@@ -36,163 +40,127 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TodoTaskDto>>> GetAllTasks()
     {
-        try
-        {
-            var businessObjects = await _businessLogic.GetAllTasksAsync();
-            var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
-            return Ok(dtos);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var businessObjects = await _businessLogic.GetAllTasksAsync();
+        var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
+        return Ok(dtos);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TodoTaskDto>> GetTask(Guid id)
     {
-        try
-        {
-            var businessObject = await _businessLogic.GetTaskByIdAsync(id);
-            return businessObject != null ? Ok(BusinessObjectToDto(businessObject)) : NotFound();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var businessObject = await _businessLogic.GetTaskByIdAsync(id);
+        return businessObject != null ? Ok(BusinessObjectToDto(businessObject)) : NotFound();
     }
 
     [HttpPost]
     public async Task<ActionResult<TodoTaskDto>> CreateTask([FromBody] CreateTodoTaskDto request)
     {
+        // Traditional N-Tier: Input validation at presentation layer
         try
         {
-            var businessObject = await _businessLogic.CreateTaskAsync(
-                request.Title, 
-                request.Description, 
-                request.DueDate);
-            
-            var dto = BusinessObjectToDto(businessObject);
-            return CreatedAtAction(nameof(GetTask), new { id = dto.Id }, dto);
+            _validationService.ValidateCreateTaskRequest(request);
         }
-        catch (ArgumentException ex)
+        catch (BusinessValidationException ex)
         {
-            return BadRequest(ex.Message);
+            var errorResponse = new ErrorResponseDto
+            {
+                Message = ex.Message,
+                ErrorCode = "VALIDATION_ERROR",
+                ValidationErrors = new List<string> { ex.Message }
+            };
+            return BadRequest(errorResponse);
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+
+        var businessObject = await _businessLogic.CreateTaskAsync(
+            request.Title, 
+            request.Description, 
+            request.DueDate);
+        
+        var dto = BusinessObjectToDto(businessObject);
+        return CreatedAtAction(nameof(GetTask), new { id = dto.Id }, dto);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateTask(Guid id, [FromBody] UpdateTodoTaskDto request)
     {
+        if (id != request.Id) 
+            return BadRequest(new ErrorResponseDto 
+            { 
+                Message = "Mismatched id", 
+                ErrorCode = "INVALID_REQUEST" 
+            });
+
+        // Traditional N-Tier: Input validation at presentation layer
         try
         {
-            if (id != request.Id) 
-                return BadRequest("Mismatched id");
+            _validationService.ValidateUpdateTaskRequest(request);
+        }
+        catch (BusinessValidationException ex)
+        {
+            var errorResponse = new ErrorResponseDto
+            {
+                Message = ex.Message,
+                ErrorCode = "VALIDATION_ERROR",
+                ValidationErrors = new List<string> { ex.Message }
+            };
+            return BadRequest(errorResponse);
+        }
 
-            var success = await _businessLogic.UpdateTaskAsync(
-                request.Id, 
-                request.Title, 
-                request.Description, 
-                request.IsCompleted, 
-                request.DueDate);
-            
-            return success ? NoContent() : NotFound();
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var success = await _businessLogic.UpdateTaskAsync(
+            request.Id, 
+            request.Title, 
+            request.Description, 
+            request.IsCompleted, 
+            request.DueDate);
+        
+        return success ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTask(Guid id)
     {
-        try
-        {
-            var success = await _businessLogic.DeleteTaskAsync(id);
-            return success ? NoContent() : NotFound();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var success = await _businessLogic.DeleteTaskAsync(id);
+        return success ? NoContent() : NotFound();
     }
 
     // Additional N-Tier business operations
     [HttpPost("{id:guid}/complete")]
     public async Task<IActionResult> CompleteTask(Guid id)
     {
-        try
-        {
-            var success = await _businessLogic.CompleteTaskAsync(id);
-            return success ? NoContent() : NotFound();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var success = await _businessLogic.CompleteTaskAsync(id);
+        return success ? NoContent() : NotFound();
     }
 
     [HttpGet("overdue")]
     public async Task<ActionResult<List<TodoTaskDto>>> GetOverdueTasks()
     {
-        try
-        {
-            var businessObjects = await _businessLogic.GetOverdueTasksAsync();
-            var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
-            return Ok(dtos);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var businessObjects = await _businessLogic.GetOverdueTasksAsync();
+        var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
+        return Ok(dtos);
     }
 
     [HttpGet("due-soon")]
     public async Task<ActionResult<List<TodoTaskDto>>> GetTasksDueSoon()
     {
-        try
-        {
-            var businessObjects = await _businessLogic.GetTasksDueSoonAsync();
-            var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
-            return Ok(dtos);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var businessObjects = await _businessLogic.GetTasksDueSoonAsync();
+        var dtos = businessObjects.Select(BusinessObjectToDto).ToList();
+        return Ok(dtos);
     }
 
     [HttpGet("summary")]
     public async Task<ActionResult<TaskSummaryDto>> GetTaskSummary()
     {
-        try
-        {
-            var allTasks = await _businessLogic.GetAllTasksAsync();
-            var overdueTasks = await _businessLogic.GetOverdueTasksAsync();
-            var dueSoonTasks = await _businessLogic.GetTasksDueSoonAsync();
+        // Optimized: Single database call instead of multiple
+        var allTasks = await _businessLogic.GetAllTasksAsync();
 
-            var summary = new TaskSummaryDto
-            {
-                TotalTasks = allTasks.Count,
-                CompletedTasks = allTasks.Count(t => t.IsCompleted),
-                OverdueTasks = overdueTasks.Count,
-                DueSoonTasks = dueSoonTasks.Count
-            };
-
-            return Ok(summary);
-        }
-        catch (Exception ex)
+        var summary = new TaskSummaryDto
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+            TotalTasks = allTasks.Count,
+            CompletedTasks = allTasks.Count(t => t.IsCompleted),
+            OverdueTasks = allTasks.Count(t => t.IsOverdue()),
+            DueSoonTasks = allTasks.Count(t => t.GetStatus() == "Due Soon")
+        };
+
+        return Ok(summary);
     }
 }

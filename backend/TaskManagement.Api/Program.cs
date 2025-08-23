@@ -1,9 +1,21 @@
+using TaskManagement.Api.Middleware;
+using TaskManagement.Application.BusinessLogic;
+using TaskManagement.Application.Services;
+using TaskManagement.Application.Repositories;
+using TaskManagement.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Traditional N-Tier: Register services
+builder.Services.AddScoped<ITodoTaskRepository, InMemoryTodoTaskRepository>();
+builder.Services.AddScoped<IValidationService, ValidationService>();
+builder.Services.AddScoped<ILoggingService, LoggingService>();
+builder.Services.AddScoped<TodoTaskBusinessLogic>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
@@ -13,6 +25,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Traditional N-Tier: Error handling middleware first
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

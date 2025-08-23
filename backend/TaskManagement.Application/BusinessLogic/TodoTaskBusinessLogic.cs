@@ -1,6 +1,9 @@
 using TaskManagement.Application.BusinessObjects;
 using TaskManagement.Application.Entities;
 using TaskManagement.Application.Repositories;
+using TaskManagement.Application.Exceptions;
+using TaskManagement.Application.Services;
+using System.Diagnostics;
 
 namespace TaskManagement.Application.BusinessLogic;
 
@@ -9,11 +12,18 @@ namespace TaskManagement.Application.BusinessLogic;
 /// </summary>
 public class TodoTaskBusinessLogic
 {
-    private readonly InMemoryTodoTaskRepository _repository;
+    private readonly ITodoTaskRepository _repository;
+    private readonly IValidationService _validationService;
+    private readonly ILoggingService _loggingService;
 
-    public TodoTaskBusinessLogic()
+    public TodoTaskBusinessLogic(
+        ITodoTaskRepository repository,
+        IValidationService validationService, 
+        ILoggingService loggingService)
     {
-        _repository = new InMemoryTodoTaskRepository();
+        _repository = repository;
+        _validationService = validationService;
+        _loggingService = loggingService;
     }
 
     // Convert between Entity and Business Object
@@ -60,60 +70,164 @@ public class TodoTaskBusinessLogic
 
     public async Task<TodoTaskBusinessObject> CreateTaskAsync(string title, string? description, DateTimeOffset? dueDate)
     {
-        // Business validation
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title is required", nameof(title));
-
-        if (title.Length > 200)
-            throw new ArgumentException("Title cannot exceed 200 characters", nameof(title));
-
-        var businessObject = new TodoTaskBusinessObject();
-        businessObject.UpdateTask(title, description, dueDate);
-        businessObject.Id = Guid.NewGuid();
-        businessObject.CreatedAt = DateTimeOffset.UtcNow;
-
-        var entity = BusinessObjectToEntity(businessObject);
-        var createdEntity = await _repository.AddAsync(entity);
+        var stopwatch = Stopwatch.StartNew();
         
-        return EntityToBusinessObject(createdEntity);
+        try
+        {
+            // Traditional N-Tier: Business validation
+            _validationService.ValidateBusinessRules(title, description, dueDate, false);
+
+            var businessObject = new TodoTaskBusinessObject
+            {
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            // This will validate business rules and throw appropriate exceptions
+            businessObject.UpdateTask(title, description, dueDate);
+
+            var entity = BusinessObjectToEntity(businessObject);
+            var createdEntity = await _repository.AddAsync(entity);
+            
+            var result = EntityToBusinessObject(createdEntity);
+            
+            // Traditional N-Tier: Logging
+            _loggingService.LogTaskCreated(result.Id, result.Title);
+            _loggingService.LogPerformanceMetric("CreateTask", stopwatch.Elapsed);
+            
+            return result;
+        }
+        catch (BusinessValidationException ex)
+        {
+            _loggingService.LogValidationError("CreateTask", ex.Message);
+            throw; // Re-throw business validation exceptions
+        }
+        catch (BusinessLogicException ex)
+        {
+            _loggingService.LogBusinessLogicError("CreateTask", ex.ErrorCode, ex.Message);
+            throw; // Re-throw business logic exceptions
+        }
+        catch (Exception ex)
+        {
+            _loggingService.LogSystemError("CreateTask", ex);
+            throw new BusinessLogicException("CREATE_FAILED", "Failed to create task", ex);
+        }
+        finally
+        {
+            stopwatch.Stop();
+        }
     }
 
     public async Task<bool> UpdateTaskAsync(Guid id, string title, string? description, bool isCompleted, DateTimeOffset? dueDate)
     {
-        var entity = await _repository.GetByIdAsync(id);
-        if (entity == null)
-            return false;
+        try
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                throw new EntityNotFoundException("TodoTask", id);
 
-        var businessObject = EntityToBusinessObject(entity);
-        
-        // Apply business logic
-        businessObject.UpdateTask(title, description, dueDate);
-        
-        if (isCompleted && !businessObject.IsCompleted)
-            businessObject.MarkAsCompleted();
-        else if (!isCompleted && businessObject.IsCompleted)
-            businessObject.MarkAsIncomplete();
+            var businessObject = EntityToBusinessObject(entity);
+            
+            // Apply business logic with validation
+            businessObject.UpdateTask(title, description, dueDate);
+            
+            if (isCompleted && !businessObject.IsCompleted)
+                businessObject.MarkAsCompleted();
+            else if (!isCompleted && businessObject.IsCompleted)
+                businessObject.MarkAsIncomplete();
 
-        var updatedEntity = BusinessObjectToEntity(businessObject);
-        return await _repository.UpdateAsync(updatedEntity);
+            var updatedEntity = BusinessObjectToEntity(businessObject);
+            var success = await _repository.UpdateAsync(updatedEntity);
+            
+            if (!success)
+                throw new BusinessLogicException("UPDATE_FAILED", "Failed to update task in repository");
+                
+            return success;
+        }
+        catch (EntityNotFoundException)
+        {
+            throw; // Re-throw entity not found exceptions
+        }
+        catch (BusinessValidationException)
+        {
+            throw; // Re-throw business validation exceptions
+        }
+        catch (BusinessLogicException)
+        {
+            throw; // Re-throw business logic exceptions
+        }
+        catch (Exception ex)
+        {
+            throw new BusinessLogicException("UPDATE_FAILED", "Failed to update task", ex);
+        }
     }
 
     public async Task<bool> DeleteTaskAsync(Guid id)
     {
-        return await _repository.DeleteAsync(id);
+        try
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                throw new EntityNotFoundException("TodoTask", id);
+
+            var businessObject = EntityToBusinessObject(entity);
+            
+            // Check business rules for deletion
+            if (!businessObject.CanBeDeleted())
+                throw new BusinessLogicException("DELETE_NOT_ALLOWED", "Cannot delete recently completed tasks");
+
+            var success = await _repository.DeleteAsync(id);
+            
+            if (!success)
+                throw new BusinessLogicException("DELETE_FAILED", "Failed to delete task from repository");
+                
+            return success;
+        }
+        catch (EntityNotFoundException)
+        {
+            throw; // Re-throw entity not found exceptions
+        }
+        catch (BusinessLogicException)
+        {
+            throw; // Re-throw business logic exceptions
+        }
+        catch (Exception ex)
+        {
+            throw new BusinessLogicException("DELETE_FAILED", "Failed to delete task", ex);
+        }
     }
 
     public async Task<bool> CompleteTaskAsync(Guid id)
     {
-        var entity = await _repository.GetByIdAsync(id);
-        if (entity == null)
-            return false;
+        try
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                throw new EntityNotFoundException("TodoTask", id);
 
-        var businessObject = EntityToBusinessObject(entity);
-        businessObject.MarkAsCompleted();
+            var businessObject = EntityToBusinessObject(entity);
+            businessObject.MarkAsCompleted(); // This will throw if already completed
 
-        var updatedEntity = BusinessObjectToEntity(businessObject);
-        return await _repository.UpdateAsync(updatedEntity);
+            var updatedEntity = BusinessObjectToEntity(businessObject);
+            var success = await _repository.UpdateAsync(updatedEntity);
+            
+            if (!success)
+                throw new BusinessLogicException("COMPLETE_FAILED", "Failed to complete task in repository");
+                
+            return success;
+        }
+        catch (EntityNotFoundException)
+        {
+            throw; // Re-throw entity not found exceptions
+        }
+        catch (BusinessLogicException)
+        {
+            throw; // Re-throw business logic exceptions
+        }
+        catch (Exception ex)
+        {
+            throw new BusinessLogicException("COMPLETE_FAILED", "Failed to complete task", ex);
+        }
     }
 
     public async Task<List<TodoTaskBusinessObject>> GetOverdueTasksAsync()
